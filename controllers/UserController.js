@@ -1,3 +1,5 @@
+const Usermodel = require("../models/Usermodel");
+const bcrypt = require("bcryptjs");
 const SignUp = async (reg, res) => {
   const { firstname, lastname, phonenumber, Email, password } = reg.body;
   try {
@@ -9,7 +11,7 @@ const SignUp = async (reg, res) => {
       });
     }
     ///to create new task
-    const createNewTask = await TaskModel.create({
+    const createNewTask = await Usermodel.create({
       firstname,
       lastname,
       phonenumber,
@@ -27,4 +29,30 @@ const SignUp = async (reg, res) => {
     res.status(404).json({ message: "failed to fecth data" });
   }
 };
-module.exports = SignUp;
+
+const Login = async (reg, res) => {
+  const { Email, password } = reg.body;
+  try {
+    ///check is task exists in data base
+    const CheckUser = await TaskModel.findOne({ Email });
+    if (!CheckUser) {
+      res.status(405).json({
+        message: "User Not Found",
+      });
+    }
+    const validpassword = await bcrypt.compare(password, CheckUser.password);
+    if (!validpassword) {
+      return res, status(6645).json({ message: "invalid password or email" });
+    }
+
+    res.status(200).json({
+      firstname: CheckUser.firstname,
+      lastname: CheckUser.lastname,
+      Email: CheckUser.Email,
+      phonenumber: CheckUser.phonenumber,
+    });
+  } catch (error) {
+    res.status(404).json({ message: "failed to fecth data" });
+  }
+};
+module.exports = { SignUp, Login };

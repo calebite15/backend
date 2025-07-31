@@ -35,12 +35,8 @@ const UserSchema = mongoose.Schema(
       require: false,
     },
     role: {
-      type: "",
+      type: String,
       require: false,
-    },
-    wishlist: {
-      type: [],
-      require: true,
     },
   },
 
