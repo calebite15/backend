@@ -5,6 +5,7 @@ const port = process.env.PORT;
 const taskRoutes = require("./route/TaskRoute");
 const colors = require("colors");
 const connectDB = require("./controllers/config/db");
+const UserRoutes = require("./route/UserRoutes");
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -37,5 +38,5 @@ app.use(bodyParser.json());
 app.use("/task", taskRoutes);
 
 app.use(cors());
-
+app.use("/api/User", UserRoutes);
 app.listen(port, () => console.log(`server running on port ${port}`.green));
