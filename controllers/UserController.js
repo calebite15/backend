@@ -1,27 +1,28 @@
 const Usermodel = require("../models/Usermodel");
 const bcrypt = require("bcryptjs");
-const SignUp = async (reg, res) => {
-  const { firstname, lastname, phonenumber, Email, password } = reg.body;
+
+const SignUp = async (req, res) => {
+  const { firstname, lastName, phonenumber, Email, password } = reg.body;
   try {
     ///check is task exists in data base
-    const UserExist = await TaskModel.findOne({ Email });
+    const UserExist = await Usermodel.findOne({ Email });
     if (UserExist) {
       res.status(405).json({
         message: "USER already exists",
       });
     }
     ///to create new task
-    const createNewTask = await Usermodel.create({
+    const createNewUser = await Usermodel.create({
       firstname,
-      lastname,
+      lastName,
       phonenumber,
       Email,
       password,
     });
-    const taskResult = await createNewTask.save();
+    const taskResult = await createNewUser.save();
     res.status(200).json({
       firstname: taskResult.firstname,
-      lastname: taskResult.lastname,
+      lastName: taskResult.lastName,
       Email: taskResult.Email,
       phonenumber: taskResult.phonenumber,
     });
@@ -30,11 +31,11 @@ const SignUp = async (reg, res) => {
   }
 };
 
-const Login = async (reg, res) => {
-  const { Email, password } = reg.body;
+const Login = async (req, res) => {
+  const { Email, password } = req.body;
   try {
     ///check is task exists in data base
-    const CheckUser = await TaskModel.findOne({ Email });
+    const CheckUser = await Usermodel.findOne({ Email });
     if (!CheckUser) {
       res.status(405).json({
         message: "User Not Found",
@@ -42,12 +43,12 @@ const Login = async (reg, res) => {
     }
     const validpassword = await bcrypt.compare(password, CheckUser.password);
     if (!validpassword) {
-      return res, status(6645).json({ message: "invalid password or email" });
+      return res, status(664).json({ message: "invalid password or email" });
     }
 
     res.status(200).json({
       firstname: CheckUser.firstname,
-      lastname: CheckUser.lastname,
+      lastName: CheckUser.lastName,
       Email: CheckUser.Email,
       phonenumber: CheckUser.phonenumber,
     });
